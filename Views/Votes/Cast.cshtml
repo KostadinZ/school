@@ -1,0 +1,42 @@
+@model VoteInputViewModel
+@{
+    ViewData["Title"] = "Cast Vote";
+}
+
+<section class="card">
+    <h1>Cast Your Vote</h1>
+    <p><strong>Election:</strong> @Model.ElectionName</p>
+
+    <form asp-action="Cast" method="post">
+        <input type="hidden" asp-for="ElectionId" />
+        <input type="hidden" asp-for="ElectionName" />
+
+        <div asp-validation-summary="ModelOnly" class="validation"></div>
+
+        <label asp-for="VoterId"></label>
+        <input asp-for="VoterId" />
+        <span asp-validation-for="VoterId" class="validation"></span>
+
+        @for (var i = 0; i < Model.Positions.Count; i++)
+        {
+            <div class="position-box">
+                <input type="hidden" asp-for="Positions[i].VotingPositionId" />
+                <input type="hidden" asp-for="Positions[i].PositionName" />
+
+                <h3>@Model.Positions[i].PositionName</h3>
+                <label>Select a candidate</label>
+                <select asp-for="Positions[i].SelectedCandidateOptionId"
+                        asp-items="Model.Positions[i].CandidateOptions">
+                    <option value="">-- Skip this position --</option>
+                </select>
+                <span asp-validation-for="Positions[i].SelectedCandidateOptionId" class="validation"></span>
+            </div>
+        }
+
+        <button class="btn" type="submit">Submit Vote</button>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

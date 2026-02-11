@@ -1,0 +1,41 @@
+@model List<PositionResultViewModel>
+@{
+    ViewData["Title"] = "Results";
+}
+
+<section class="card">
+    <h1>Election Results</h1>
+    <p><strong>Election:</strong> @ViewBag.ElectionName</p>
+
+    @if (TempData["Success"] is string message)
+    {
+        <p class="success">@message</p>
+    }
+
+    @foreach (var position in Model)
+    {
+        <div class="position-box">
+            <h2>@position.PositionName</h2>
+            <p>Total Votes: @position.TotalVotes</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Candidate</th>
+                        <th>Manifesto</th>
+                        <th>Votes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var candidate in position.Candidates.OrderByDescending(c => c.VoteCount))
+                    {
+                        <tr>
+                            <td>@candidate.CandidateName</td>
+                            <td>@candidate.Manifesto</td>
+                            <td>@candidate.VoteCount</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

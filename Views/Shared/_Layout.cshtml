@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - School Voting System</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="nav">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Votes" asp-action="Cast">Cast Vote</a>
+            <a asp-controller="Votes" asp-action="Results">Results</a>
+        </nav>
+    </header>
+    <main class="container">
+        @RenderBody()
+    </main>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

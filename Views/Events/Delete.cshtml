@@ -4,9 +4,11 @@
 }
 
 <h1>Delete Event</h1>
-<div class="alert alert-warning">Are you sure you want to delete <strong>@Model.Title</strong>? This also removes @Model.Registrations.Count registration(s).</div>
+
+<p>Are you sure you want to delete @Model.Title?</p>
+
 <form asp-action="Delete" method="post">
     <input type="hidden" asp-for="Id" />
     <button class="btn btn-danger" type="submit">Delete</button>
-    <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+    <a class="btn btn-secondary" asp-action="Index">Cancel</a>
 </form>

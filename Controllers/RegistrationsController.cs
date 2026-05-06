@@ -18,23 +18,22 @@ public class RegistrationsController : Controller
     public async Task<IActionResult> Index()
     {
         var registrations = await _context.Registrations
-            .Include(registration => registration.Event)
-            .Include(registration => registration.Student)
-            .OrderByDescending(registration => registration.RegistrationDate)
+            .Include(r => r.Event)
+            .Include(r => r.Student)
             .ToListAsync();
 
         return View(registrations);
     }
 
-    public async Task<IActionResult> Create(int? eventId)
+    public async Task<IActionResult> Create()
     {
-        await PopulateDropDowns(eventId);
-        return View(new Registration { EventId = eventId ?? 0, RegistrationDate = DateTime.Now });
+        await FillDropDowns();
+        return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("EventId,StudentId")] Registration registration)
+    public async Task<IActionResult> Create(Registration registration)
     {
         var schoolEvent = await _context.Events
             .Include(e => e.Registrations)
@@ -42,58 +41,36 @@ public class RegistrationsController : Controller
 
         if (schoolEvent == null)
         {
-            ModelState.AddModelError(nameof(Registration.EventId), "Please choose a valid event.");
+            ModelState.AddModelError("", "Please choose an event.");
         }
         else if (schoolEvent.Registrations.Count >= schoolEvent.MaxParticipants)
         {
-            ModelState.AddModelError(nameof(Registration.EventId), "This event is full.");
+            ModelState.AddModelError("", "This event is full.");
         }
 
-        if (!await _context.Students.AnyAsync(student => student.Id == registration.StudentId))
-        {
-            ModelState.AddModelError(nameof(Registration.StudentId), "Please choose a valid student.");
-        }
+        bool alreadyRegistered = await _context.Registrations.AnyAsync(r =>
+            r.EventId == registration.EventId && r.StudentId == registration.StudentId);
 
-        var alreadyRegistered = await _context.Registrations.AnyAsync(existing =>
-            existing.EventId == registration.EventId && existing.StudentId == registration.StudentId);
         if (alreadyRegistered)
         {
-            ModelState.AddModelError(string.Empty, "This student is already registered for the selected event.");
+            ModelState.AddModelError("", "This student is already registered for this event.");
         }
 
         if (ModelState.IsValid)
         {
             registration.RegistrationDate = DateTime.Now;
-            _context.Add(registration);
+            _context.Registrations.Add(registration);
             await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = "Registration completed successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        await PopulateDropDowns(registration.EventId);
+        await FillDropDowns();
         return View(registration);
     }
 
-    private async Task PopulateDropDowns(int? selectedEventId = null)
+    private async Task FillDropDowns()
     {
-        var events = await _context.Events
-            .Include(schoolEvent => schoolEvent.Registrations)
-            .OrderBy(schoolEvent => schoolEvent.Date)
-            .ToListAsync();
-
-        ViewBag.EventId = new SelectList(
-            events.Select(schoolEvent => new
-            {
-                schoolEvent.Id,
-                DisplayName = $"{schoolEvent.Title} ({Math.Max(0, schoolEvent.MaxParticipants - schoolEvent.Registrations.Count)} seats left)"
-            }),
-            "Id",
-            "DisplayName",
-            selectedEventId);
-
-        ViewBag.StudentId = new SelectList(
-            await _context.Students.OrderBy(student => student.Name).ToListAsync(),
-            "Id",
-            "Name");
+        ViewBag.EventId = new SelectList(await _context.Events.ToListAsync(), "Id", "Title");
+        ViewBag.StudentId = new SelectList(await _context.Students.ToListAsync(), "Id", "Name");
     }
 }

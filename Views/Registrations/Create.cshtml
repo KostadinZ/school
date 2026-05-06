@@ -3,30 +3,24 @@
     ViewData["Title"] = "Register Student";
 }
 
-<h1>Register Student for Event</h1>
-<div class="card shadow-sm">
-    <div class="card-body">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="mb-3">
-                <label asp-for="EventId" class="form-label"></label>
-                <select asp-for="EventId" class="form-select" asp-items="ViewBag.EventId">
-                    <option value="">Choose an event</option>
-                </select>
-                <span asp-validation-for="EventId" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="StudentId" class="form-label"></label>
-                <select asp-for="StudentId" class="form-select" asp-items="ViewBag.StudentId">
-                    <option value="">Choose a student</option>
-                </select>
-                <span asp-validation-for="StudentId" class="text-danger"></span>
-            </div>
-            <button class="btn btn-primary" type="submit">Register</button>
-            <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
-        </form>
+<h1>Register Student</h1>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="EventId" class="form-label"></label>
+        <select asp-for="EventId" class="form-select" asp-items="ViewBag.EventId"></select>
     </div>
-</div>
+
+    <div class="mb-3">
+        <label asp-for="StudentId" class="form-label"></label>
+        <select asp-for="StudentId" class="form-select" asp-items="ViewBag.StudentId"></select>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Register</button>
+    <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

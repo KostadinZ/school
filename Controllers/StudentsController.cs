@@ -16,12 +16,7 @@ public class StudentsController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var students = await _context.Students
-            .Include(student => student.Registrations)
-            .OrderBy(student => student.Name)
-            .ToListAsync();
-
-        return View(students);
+        return View(await _context.Students.ToListAsync());
     }
 
     public IActionResult Create()
@@ -31,18 +26,12 @@ public class StudentsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Name,Email,ClassName")] Student student)
+    public async Task<IActionResult> Create(Student student)
     {
-        if (await _context.Students.AnyAsync(existing => existing.Email == student.Email))
-        {
-            ModelState.AddModelError(nameof(Student.Email), "A student with this email already exists.");
-        }
-
         if (ModelState.IsValid)
         {
-            _context.Add(student);
+            _context.Students.Add(student);
             await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = "Student added successfully.";
             return RedirectToAction(nameof(Index));
         }
 

@@ -1,0 +1,30 @@
+@model IEnumerable<Registration>
+@{
+    ViewData["Title"] = "Registrations";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Registrations</h1>
+    <a class="btn btn-primary" asp-action="Create">Register Student</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr><th>Event</th><th>Student</th><th>Class</th><th>Registration Date</th></tr>
+            </thead>
+            <tbody>
+            @foreach (var registration in Model)
+            {
+                <tr>
+                    <td>@registration.Event?.Title</td>
+                    <td>@registration.Student?.Name</td>
+                    <td>@registration.Student?.ClassName</td>
+                    <td>@registration.RegistrationDate.ToString("g")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

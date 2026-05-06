@@ -1,0 +1,36 @@
+@model Event
+@{
+    ViewData["Title"] = "Event Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>@Model.Title</h1>
+    <a class="btn btn-primary" asp-controller="Registrations" asp-action="Create" asp-route-eventId="@Model.Id">Register Student</a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <p class="lead">@Model.Description</p>
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Date</dt><dd class="col-sm-9">@Model.Date.ToString("f")</dd>
+            <dt class="col-sm-3">Location</dt><dd class="col-sm-9">@Model.Location</dd>
+            <dt class="col-sm-3">Capacity</dt><dd class="col-sm-9">@Model.Registrations.Count / @Model.MaxParticipants registered (@Model.SeatsLeft seats left)</dd>
+        </dl>
+    </div>
+</div>
+
+<h2 class="h4">Registered Students</h2>
+<table class="table table-striped bg-white shadow-sm rounded">
+    <thead><tr><th>Name</th><th>Email</th><th>Class</th><th>Registered On</th></tr></thead>
+    <tbody>
+    @foreach (var registration in Model.Registrations.OrderBy(r => r.Student!.Name))
+    {
+        <tr>
+            <td>@registration.Student?.Name</td>
+            <td>@registration.Student?.Email</td>
+            <td>@registration.Student?.ClassName</td>
+            <td>@registration.RegistrationDate.ToString("g")</td>
+        </tr>
+    }
+    </tbody>
+</table>

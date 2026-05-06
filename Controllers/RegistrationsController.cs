@@ -15,29 +15,29 @@ public class RegistrationsController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var registrations = await _context.Registrations
+        var registrations = _context.Registrations
             .Include(r => r.Event)
             .Include(r => r.Student)
-            .ToListAsync();
+            .ToList();
 
         return View(registrations);
     }
 
-    public async Task<IActionResult> Create()
+    public IActionResult Create()
     {
-        await FillDropDowns();
+        FillDropDowns();
         return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Registration registration)
+    public IActionResult Create(Registration registration)
     {
-        var schoolEvent = await _context.Events
+        var schoolEvent = _context.Events
             .Include(e => e.Registrations)
-            .FirstOrDefaultAsync(e => e.Id == registration.EventId);
+            .FirstOrDefault(e => e.Id == registration.EventId);
 
         if (schoolEvent == null)
         {
@@ -48,7 +48,7 @@ public class RegistrationsController : Controller
             ModelState.AddModelError("", "This event is full.");
         }
 
-        bool alreadyRegistered = await _context.Registrations.AnyAsync(r =>
+        bool alreadyRegistered = _context.Registrations.Any(r =>
             r.EventId == registration.EventId && r.StudentId == registration.StudentId);
 
         if (alreadyRegistered)
@@ -60,17 +60,17 @@ public class RegistrationsController : Controller
         {
             registration.RegistrationDate = DateTime.Now;
             _context.Registrations.Add(registration);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
-        await FillDropDowns();
+        FillDropDowns();
         return View(registration);
     }
 
-    private async Task FillDropDowns()
+    private void FillDropDowns()
     {
-        ViewBag.EventId = new SelectList(await _context.Events.ToListAsync(), "Id", "Title");
-        ViewBag.StudentId = new SelectList(await _context.Students.ToListAsync(), "Id", "Name");
+        ViewBag.EventId = new SelectList(_context.Events.ToList(), "Id", "Title");
+        ViewBag.StudentId = new SelectList(_context.Students.ToList(), "Id", "Name");
     }
 }

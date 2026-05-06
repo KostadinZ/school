@@ -14,7 +14,7 @@ public class EventsController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index(string? searchString)
+    public IActionResult Index(string? searchString)
     {
         var events = _context.Events.Include(e => e.Registrations).AsQueryable();
 
@@ -24,15 +24,15 @@ public class EventsController : Controller
         }
 
         ViewBag.SearchString = searchString;
-        return View(await events.OrderBy(e => e.Date).ToListAsync());
+        return View(events.OrderBy(e => e.Date).ToList());
     }
 
-    public async Task<IActionResult> Details(int id)
+    public IActionResult Details(int id)
     {
-        var schoolEvent = await _context.Events
+        var schoolEvent = _context.Events
             .Include(e => e.Registrations)
             .ThenInclude(r => r.Student)
-            .FirstOrDefaultAsync(e => e.Id == id);
+            .FirstOrDefault(e => e.Id == id);
 
         if (schoolEvent == null)
         {
@@ -49,21 +49,21 @@ public class EventsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Event schoolEvent)
+    public IActionResult Create(Event schoolEvent)
     {
         if (ModelState.IsValid)
         {
             _context.Events.Add(schoolEvent);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
         return View(schoolEvent);
     }
 
-    public async Task<IActionResult> Edit(int id)
+    public IActionResult Edit(int id)
     {
-        var schoolEvent = await _context.Events.FindAsync(id);
+        var schoolEvent = _context.Events.Find(id);
 
         if (schoolEvent == null)
         {
@@ -75,21 +75,21 @@ public class EventsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Event schoolEvent)
+    public IActionResult Edit(Event schoolEvent)
     {
         if (ModelState.IsValid)
         {
             _context.Events.Update(schoolEvent);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
         return View(schoolEvent);
     }
 
-    public async Task<IActionResult> Delete(int id)
+    public IActionResult Delete(int id)
     {
-        var schoolEvent = await _context.Events.FindAsync(id);
+        var schoolEvent = _context.Events.Find(id);
 
         if (schoolEvent == null)
         {
@@ -101,14 +101,14 @@ public class EventsController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public IActionResult DeleteConfirmed(int id)
     {
-        var schoolEvent = await _context.Events.FindAsync(id);
+        var schoolEvent = _context.Events.Find(id);
 
         if (schoolEvent != null)
         {
             _context.Events.Remove(schoolEvent);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
         return RedirectToAction(nameof(Index));

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SchoolEventRegistration.Data;
 using SchoolEventRegistration.Models;
 
@@ -14,9 +13,9 @@ public class StudentsController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        return View(await _context.Students.ToListAsync());
+        return View(_context.Students.ToList());
     }
 
     public IActionResult Create()
@@ -26,12 +25,12 @@ public class StudentsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Student student)
+    public IActionResult Create(Student student)
     {
         if (ModelState.IsValid)
         {
             _context.Students.Add(student);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 

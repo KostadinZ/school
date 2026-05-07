@@ -44,11 +44,10 @@ public class EventsController : Controller
 
     public IActionResult Create()
     {
-        return View();
+        return View(new Event());
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public IActionResult Create(Event schoolEvent)
     {
         if (ModelState.IsValid)
@@ -74,7 +73,6 @@ public class EventsController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public IActionResult Edit(Event schoolEvent)
     {
         if (ModelState.IsValid)
@@ -100,7 +98,6 @@ public class EventsController : Controller
     }
 
     [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(int id)
     {
         var schoolEvent = _context.Events.Find(id);

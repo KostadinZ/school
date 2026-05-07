@@ -32,7 +32,6 @@ public class RegistrationsController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public IActionResult Create(Registration registration)
     {
         var schoolEvent = _context.Events

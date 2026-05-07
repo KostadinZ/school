@@ -24,7 +24,6 @@ public class StudentsController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public IActionResult Create(Student student)
     {
         if (ModelState.IsValid)

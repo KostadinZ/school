@@ -1,0 +1,11 @@
+@model Event
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<h1>Create Event</h1>
+<partial name="_EventForm" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

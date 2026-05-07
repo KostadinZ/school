@@ -1,0 +1,30 @@
+@model IEnumerable<Student>
+@{
+    ViewData["Title"] = "Students";
+}
+
+<h1>Students</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Add Student</a>
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Class</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var student in Model)
+    {
+        <tr>
+            <td>@student.Name</td>
+            <td>@student.Email</td>
+            <td>@student.ClassName</td>
+        </tr>
+    }
+    </tbody>
+</table>

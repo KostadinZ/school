@@ -1,0 +1,30 @@
+@model IEnumerable<Registration>
+@{
+    ViewData["Title"] = "Registrations";
+}
+
+<h1>Registrations</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Register Student</a>
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Event</th>
+            <th>Student</th>
+            <th>Registration Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var registration in Model)
+    {
+        <tr>
+            <td>@registration.Event?.Title</td>
+            <td>@registration.Student?.Name</td>
+            <td>@registration.RegistrationDate.ToString("g")</td>
+        </tr>
+    }
+    </tbody>
+</table>
